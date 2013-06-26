@@ -35,7 +35,7 @@ class StreamInterceptor implements Interception\IInterceptor
             /** @var $instance IStream */
             $instance = $invocation->GetDecoratedInstance();
 
-            $params = & $invocation->GetMethodParameters();
+            $params = &$invocation->GetMethodParameters();
 
             if ($instance->Read() == $params['stream']) {
                 throw new Exception('You can not set the value whict is already set');
