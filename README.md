@@ -3,7 +3,7 @@ PHP-DependencyInjectionContainer
 
 PHP reflection-based dependency injection container with auto-wiring, auto-registration and interception support
 
-What is it?
+What is this?
 -----------
 
 This thing here is a result of an effort to implement a “mature” dependency injection container for PHP. Out of three must-have features which the “mature” DI container should address, this implementation supports object composition and object lifetime. Interception is not supported, but it can be added quite simply though.
@@ -644,6 +644,212 @@ Here we have four interfaces `IA`, `IB`, `IC` and `ID` and their implementations
     #5 /container/example8.php(68): DiContainer\Container->Resolve('IA')
     #6 {main}
       thrown in /container/DiContainer/Container.php on line 207
+      
+**9. Using configurator classes to initialize container**
+
+    <?php
+    
+    require_once 'DiContainer/Container.php';
+    
+    interface IA
+    {
+    }
+    
+    interface IB
+    {
+    }
+    
+    interface IC
+    {
+    }
+    
+    interface ID
+    {
+    }
+    
+    class A implements IA
+    {
+        private $b = null;
+        private $c = null;
+    
+        public function __construct(IB $b, IC $c)
+        {
+            $this->b = $b;
+            $this->c = $c;
+        }
+    }
+    
+    class B implements IB
+    {
+        private $d = null;
+    
+        function __construct(ID $d)
+        {
+            $this->d = $d;
+        }
+    }
+    
+    class C implements IC
+    {
+    }
+    
+    
+    class D implements ID
+    {
+    }
+    
+    class Configurator1 implements DiContainer\IConfigurator
+    {
+        public function Configure(DiContainer\Container $container)
+        {
+            $container->RegisterType('IA', 'A')
+                ->RegisterType('IB', 'B')
+                ->RegisterType('IC', 'C');
+        }
+    }
+    
+    class Configurator2 implements DiContainer\IConfigurator
+    {
+        public function Configure(DiContainer\Container $container)
+        {
+            $container->RegisterType('ID', 'D');
+        }
+    }
+    
+    $container = new DiContainer\Container(array(new Configurator1(), new Configurator2()));
+    $instance = $container->Resolve('IA');
+    
+    print_r($instance);
+    
+If for some reason, you want to delegate container initialization logic to one or multiple classes you can easily do it. The first parameter of the container constructor is an array of objects implementing `DiContainer\IConfigurator` interface.
+
+    interface IConfigurator
+    {
+        function Configure(Container $container);
+    }
+    
+This example is essentially slightly modified example #2 with the only difference that initialization logic was moved into two classes `Configurator1` and `Configurator2` both implementing the `DiContainer\IConfigurator` interface. The result of the code execution is exactly the same.    
+
+    A Object
+    (
+        [b:A:private] => B Object
+            (
+                [d:B:private] => D Object
+                    (
+                    )
+    
+            )
+    
+        [c:A:private] => C Object
+            (
+            )
+    )
 
 
+__*Note 1*__ 
 
+The default value of the first parameter is `null`.
+
+__*Note 2*__ 
+
+The same instance of the container is passed in turn into every particular configurator starting from the first one.
+
+**10. INI based container configuration**
+
+<?php
+
+namespace Interfaces
+{
+    interface IA
+    {
+    }
+}
+
+namespace Implementations
+{
+    class A implements \Interfaces\IA
+    {
+    }
+}
+
+namespace
+{
+    require_once 'DiContainer/Container.php';
+    require_once 'DiContainer/IniBasedConfigurator.php';
+
+    interface IA
+    {
+    }
+
+    interface IB
+    {
+    }
+
+    class A implements IA
+    {
+        private $foo;
+
+        function __construct($foo)
+        {
+            $this->foo = $foo;
+        }
+    }
+
+    class B implements IB
+    {
+        private $bar;
+
+        function __construct($bar)
+        {
+            $this->bar = $bar;
+        }
+    }
+
+    $container = new DiContainer\Container(array(new DiContainer\IniBasedConfigurator('container.ini')));
+    print_r($container->Resolve('Interfaces\IA'));
+    print_r($container->Resolve('IA'));
+    print_r($container->Resolve('IB'));
+}
+
+Output
+
+    Implementations\A Object
+    (
+    )
+    A Object
+    (
+        [foo:A:private] => foo_value
+    )
+    B Object
+    (
+        [bar:B:private] => bar_value
+    )
+
+The `DiContainer` namespace contains the class `DiContainer\IniBasedConfigurator` that provides implementation of the `DiContainer\IConfigurator` interface that can read container configuration from the standard [PHP INI file](http://php.net/manual/en/function.parse-ini-file.php). `$container = new DiContainer\Container(array(new DiContainer\IniBasedConfigurator('container.ini')));` creates instance of the container that is being initialized by the instance of the `DiContainer\IniBasedConfigurator` which reads configuration from the `container.ini`.
+
+    [type_rule_mapping]
+    abstract_type_name_pattern[] = ~^Interfaces\\I(.+)$~
+    implementation_type_name_replacement[] = Implementations\\${1}
+    
+    [type_mapping]
+    abstract_type[] = IA
+    implementation_type[] = A
+    abstract_type[] = IB
+    implementation_type[] = B
+    
+    [parameter_value_mapping]
+    parameter[] = foo
+    value[] = foo_value
+    parameter[] = bar
+    value[] = bar_value
+    
+This is an equivalent of the following code execution
+
+    $container->RegisterTypeMappingRule('~^Interfaces\\\I(.+)~', 'Implementations\\\${1}')
+            ->RegisterType('IA', 'A')->RegisterType('IB', 'B')
+            ->RegisterParameterValue('foo', 'foo_value')
+            ->RegisterParameterValue('bar', 'bar_value');
+            
+__*Note 1*__ 
+
+Here you can see another example of the out-of-the-box namespaces support. The container distinguishes two abstract types declared in different namespaces (IA and Interfaces\IA).                        
