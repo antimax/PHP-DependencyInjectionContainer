@@ -6,7 +6,7 @@ PHP reflection-based dependency injection container with auto-wiring, auto-regis
 What is this?
 -----------
 
-This thing here is a result of an effort to implement a “mature” dependency injection container for PHP. Out of three must-have features which the “mature” DI container should address, this implementation supports object composition and object lifetime. Interception is not supported, but it can be added quite simply though.
+This thing here is a result of an effort to implement a “mature” dependency injection container for PHP. This implementation supports all three must-have features wich a "mature" DI container must to support: object composition, object lifetime mamangement and interception. 
 
 [This excellent book](http://www.amazon.com/Dependency-Injection-NET-Mark-Seemann/dp/1935182501/) will give you comprehensive understanding of dependency injection ideology and dependency injection containers. Glossary of the book contains references to some other extremely valuable sources of information about SOLID object-oriented programming.
 
@@ -18,7 +18,7 @@ PHP 5.3.9 and above.
 Disadvantages
 -------------
 
-Since the container is reflection-based, it entirely relies on the type hinting in constructor declaration. That could be a problem for already existing projects being refactored, but I have strong opinion that for newly created PHP code the type hinting should be a “must have” feature.
+Since the container is reflection-based, it entirely relies on the type hinting in constructor declaration. That could be a problem for already existing projects being refactored, but I have strong opinion that for a newly created PHP code the type hinting should be a “must have” feature.
 
 Since the container does all sanity checks for registrations, it requires all involved classes and interfaces to be declared prior the registration. This means that you should have “required_once” PHP files declaring classes and interfaces before registration phase. DI container package provides simple source code loader that addresses this issue.
 
