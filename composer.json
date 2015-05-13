@@ -1,0 +1,26 @@
+{
+    "name": "antimax/PHP-DependencyInjectionContainer",
+    "type": "library",
+    "description": "PHP reflection-based dependency injection container with auto-wiring, auto-registration and interception support",
+    "keywords": ["Autowiring", "DI", "Dependency Injection"],
+    "homepage": "https://github.com/antimax/PHP-DependencyInjectionContainer",
+    "version": "0.0",
+    "license": "AS IS",
+    "authors": [
+        {
+            "name": "Konstantin Shpolvind",
+            "email": "skv@eml.ru"
+        },
+        {
+            "name": "Maxim Antipin",
+            "email": "SorryMaximI@DunnoUrEmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.2"
+    },
+    "autoload": {
+        "psr-0": { "DiContainer\\": "Antimax/PHP-DependencyInjectionContainer/DiContainer" }
+    },
+    "target-dir": "Antimax/PHP-DependencyInjectionContainer"
+}
