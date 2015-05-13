@@ -21,6 +21,5 @@
     },
     "autoload": {
         "psr-0": { "DiContainer\\": "skvskv/PHP-DependencyInjectionContainer/DiContainer" }
-    },
-    "target-dir": "skvskv/PHP-DependencyInjectionContainer"
+    }
 }
