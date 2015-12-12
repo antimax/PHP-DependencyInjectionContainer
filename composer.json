@@ -1,0 +1,25 @@
+{
+    "name": "skvskv/PHP-DependencyInjectionContainer",
+    "type": "library",
+    "version": "0.0",
+    "description": "PHP reflection-based dependency injection container with auto-wiring, auto-registration and interception support",
+    "keywords": ["Autowiring", "DI", "Dependency Injection"],
+    "homepage": "https://github.com/skvskv/PHP-DependencyInjectionContainer",
+    "license": "AS IS",
+    "authors": [
+        {
+            "name": "Konstantin Shpolvind",
+            "email": "skv@eml.ru"
+        },
+        {
+            "name": "Maxim Antipin",
+            "email": "SorryMaximI@DunnoUrEmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.2"
+    },
+    "autoload": {
+        "psr-0": { "DiContainer\\": "" }
+    }
+}
