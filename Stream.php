@@ -31,6 +31,7 @@ class StreamInterceptor implements Interception\IInterceptor
 {
     public function Intercept(Interception\IInvocation $invocation)
     {
+		// example of 'PRE' behavior
         if ($invocation->GetMethod()->getName() == 'Write') { // if 'Write' method is being called
             /** @var $instance IStream */
             $instance = $invocation->GetDecoratedInstance(); // get original (non-decorated) instance
@@ -45,6 +46,8 @@ class StreamInterceptor implements Interception\IInterceptor
         }
 
         $invocation->Proceed(); // proceed with the call
+		
+		// insert your 'POST' behavior here
     }
 }
 
