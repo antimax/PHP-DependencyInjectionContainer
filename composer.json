@@ -4,8 +4,8 @@
     "version": "0.0",
     "description": "PHP reflection-based dependency injection container with auto-wiring, auto-registration and interception support",
     "keywords": ["Autowiring", "DI", "Dependency Injection"],
-    "homepage": "https://github.com/skvskv/PHP-DependencyInjectionContainer",
-    "license": "AS IS",
+    "homepage": "https://github.com/antimax/PHP-DependencyInjectionContainer",
+    "license": "MIT",
     "authors": [
         {
             "name": "Konstantin Shpolvind",
@@ -13,7 +13,7 @@
         },
         {
             "name": "Maxim Antipin",
-            "email": "SorryMaximI@DunnoUrEmail.com"
+            "email": "antimax@gmail.com"
         }
     ],
     "require": {

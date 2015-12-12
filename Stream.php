@@ -31,20 +31,20 @@ class StreamInterceptor implements Interception\IInterceptor
 {
     public function Intercept(Interception\IInvocation $invocation)
     {
-        if ($invocation->GetMethod()->getName() == 'Write') {
+        if ($invocation->GetMethod()->getName() == 'Write') { // if 'Write' method is being called
             /** @var $instance IStream */
-            $instance = $invocation->GetDecoratedInstance();
+            $instance = $invocation->GetDecoratedInstance(); // get original (non-decorated) instance
 
-            $params = &$invocation->GetMethodParameters();
+            $params = &$invocation->GetMethodParameters(); // get call parameters
 
-            if ($instance->Read() == $params['stream']) {
-                throw new Exception('You can not set the value whict is already set');
+            if ($instance->Read() == $params['stream']) { // barf, if orignal instance has this value set already
+                throw new Exception('You can not set the value which is already set');
             }
 
-            $params['stream'] = 'yyy';
+            $params['stream'] = 'yyy'; // override call parameter value
         }
 
-        $invocation->Proceed();
+        $invocation->Proceed(); // proceed with the call
     }
 }
 
@@ -52,11 +52,11 @@ class StreamInterceptorSelector implements Interception\IInerceptorSelector
 {
     public function GetInterceptors(\ReflectionClass $decoratedType)
     {
-        if ($decoratedType->getName() != 'IStream') {
-            return array();
+        if ($decoratedType->getName() == 'IStream') {
+			return array(new StreamInterceptor());
         }
 
-        return array(new StreamInterceptor());
+        return array();
     }
 }
 
@@ -65,7 +65,7 @@ $container = new DiContainer\Container(array(), array(new StreamInterceptorSelec
 /** @var $stream IStream */
 $stream = $container->RegisterType('IStream', 'Stream')->Resolve('IStream');
 
-$value = 'asss';
+$value = 'ssss';
 $stream->Write($value);
 print_r($stream);
 print $value;
